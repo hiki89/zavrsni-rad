@@ -1,9 +1,12 @@
-<?php
+<?php include 'partials/header.php';?>
 
-include 'partials/header.php';
+<main role="main" class="container">
 
-?>
-<div class="blog-post">
+    <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+            <div class="blog-post">
                 <h2 class="blog-post-title">Sample blog post</h2>
                 <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
 
@@ -33,11 +36,20 @@ include 'partials/header.php';
                     <li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li>
                     <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
                 </ol>
-                <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>
-            </div><!-- /.blog-post -->
-<?php
+                <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p> -->
+            </div>
 
-include 'partials/sidebar.php';
-include 'partials/footer.php';
+            <nav class="blog-pagination">
+                <a class="btn btn-outline-primary" href="#">Older</a>
+                <a class="btn btn-outline-secondary disabled" href="#">Newer</a>
+            </nav>
 
-?>
+        </div>
+
+        <?php include 'partials/sidebar.php' ?>
+
+    </div><!-- /.row -->
+
+</main><!-- /.container -->
+
+<?php include 'partials/footer.php'?>

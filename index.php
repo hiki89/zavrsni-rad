@@ -1,6 +1,29 @@
 
 
-<?php include 'partials/header.php';?>
+<?php 
+
+include 'partials/header.php';
+include 'connection_to_db.php';
+         
+         $sql = "SELECT * FROM posts ORDER BY created_at ASC";
+         $statement = $connection->prepare($sql);
+
+         // izvrsavamo upit
+         $statement->execute();
+
+         // zelimo da se rezultat vrati kao asocijativni niz.
+         // ukoliko izostavimo ovu liniju, vratice nam se obican, numerisan niz
+         $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+         // punimo promenjivu sa rezultatom upita
+         $posts = $statement->fetchAll();
+
+         // koristite var_dump kada god treba da proverite sadrzaj neke promenjive
+            //  echo '<pre>';
+            //  var_dump($posts);
+            //  echo '</pre>';
+
+?>
 
 <main role="main" class="container">
 
@@ -9,16 +32,20 @@
         <div class="col-sm-8 blog-main">
 
             <div class="blog-post">
-                <h2 class="blog-post-title"><a href='single-post.php'>Sample blog post</a></h2>
-                <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
+            <?php
+                foreach ($posts as $post) {
+            ?>
 
-                <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
+                <h2 class="blog-post-title"><a href='single-post.php'><?php echo($post['title']) ?></a></h2>
+                <p class="blog-post-meta"><?php echo($post['created_at']) ?> <a href="#"><?php echo($post['author']) ?></a></p>
+                <?php echo($post['body']) ?>
+                <!-- <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
                 <hr>
                 <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
                 <blockquote>
                     <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
                 </blockquote>
-                <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+                <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p> -->
                 <!-- <h2>Heading</h2>
                 <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
                 <h3>Sub-heading</h3>
@@ -39,9 +66,13 @@
                     <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
                 </ol>
                 <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p> -->
+                <?php
+                }
+            ?>
+
             </div><!-- /.blog-post -->
 
-            <div class="blog-post">
+            <!-- <div class="blog-post">
                 <h2 class="blog-post-title">Another blog post</h2>
                 <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
 
@@ -53,7 +84,7 @@
                 <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
             </div><!-- /.blog-post -->
 
-            <div class="blog-post">
+            <!-- <div class="blog-post">
                 <h2 class="blog-post-title">New feature</h2>
                 <p class="blog-post-meta">December 14, 2013 by <a href="#">Chris</a></p>
 
@@ -65,7 +96,7 @@
                 </ul>
                 <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
                 <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
-            </div><!-- /.blog-post -->
+            </div>/.blog-post --> -->
 
             <nav class="blog-pagination">
                 <a class="btn btn-outline-primary" href="#">Older</a>
