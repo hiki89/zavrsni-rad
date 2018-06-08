@@ -3,13 +3,11 @@
 <?php
 $post_id = $_GET['id'];
 
-if (!empty($_GET['error'])) {
-    $error = true;
-}
 
-$sql = "SELECT posts.id AS pId, posts.title, posts.body, posts.author, posts.created_at,
+
+$sql = "SELECT posts.id, posts.title, posts.body, posts.author, posts.created_at,
 comments.id, comments.post_id, comments.author AS comm_author,
-comments.tekst FROM posts INNER JOIN comments ON posts.id = 
+comments.tekst FROM posts LEFT JOIN comments ON posts.id = 
 comments.post_id WHERE posts.id = $post_id";
 $statement = $connection->prepare($sql);
 $statement->execute();
@@ -19,10 +17,20 @@ $postWithComments = $statement->fetchAll();
 $post = $postWithComments[0];
 $comments = [];
 foreach($postWithComments as $comment) {
-    array_push($comments, ['author' => $comment['comm_author'], 'text' => $comment['tekst']]);
+    array_push($comments, ['author' => $comment['comm_author'], 'text' => $comment['tekst'], 'commentId' => $comment['id']]);
 }
 
 ?>
+
+<script>
+    function shouldDeletePost () {
+        if (confirm('Are you sure you want to delete this post?')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
 
 <main role="main" class="container">
 
@@ -36,6 +44,11 @@ foreach($postWithComments as $comment) {
                 <?php echo($post['title']) ?></h2>
                 <p class="blog-post-meta"><?php echo($post['created_at']) ?> <a href="#"><?php echo($post['author']) ?></a></p>
                 <?php echo($post['body']) ?>
+
+                <form action="delete-post.php" method="POST" onsubmit="return shouldDeletePost()">
+                <input name="postId" type="hidden" value="<?php echo $post_id ?>">
+                <button type="submit" name="delPost" class="btn">Delete this post </button>
+                </form>
                     
             </div>
             <div>
@@ -47,13 +60,13 @@ foreach($postWithComments as $comment) {
                     <button type="submit" name="btn">Submit</button>
                 </form>
 
-                <?php if ($error) { ?>
+                <?php if (!empty($_GET['error'])) { ?>
                     <div class="alert alert-danger">All fields are required!</div>
                 <?php } ?>
                 
             </div>
 
-            
+            <?php if (!empty($comment['tekst'])) { ?>
                 <button type="button" class="btn" id="button1" onclick="myFunction()">Hide comments</button>
                 <script>
                     function myFunction() {
@@ -72,19 +85,28 @@ foreach($postWithComments as $comment) {
             
 
             <div class="comment" id="myDIV">
-                <?php
-                    foreach ($comments as $comm) {
-                ?>
-                    <ul>
-                        <li><?php echo ($comm['text']) ?></li>
-                        <li><?php echo ($comm['author']) . "<hr/>"?></li>
-                        <!-- <li><form method="post" action="delete-comment.php">
-                        <button class="btn btn-default float-right">Delete comment</button></form></li> -->
-                    </ul>
-                <?php
-                }
-                ?>
+            <?php if (!empty($_GET['comment_deleted'])) { ?>
+                <div class="alert alert-danger">Comment deleted succesfully!</div>
+            <?php } ?>
+            <?php
+                foreach ($comments as $comm) {
+            ?>
+                <ul>
+                    <li><?php echo ($comm['text']) ?></li>
+                    <li><?php echo ($comm['author']) ?></li>
+                    <form method="post" action="delete-comment.php">
+                    <button name="delete-button"class="btn-default float-right">Delete comment</button>
+                    <input name="postId" type="hidden" value="<?php echo $post_id ?>">
+                    <input name="commentId" type="hidden" value="<?php echo ($comm['commentId']); ?>">
+                    </form>
+                </ul><hr/>
+            <?php
+            }
+            ?>
             </div>
+            <?php
+            }
+            ?>
 
             <nav class="blog-pagination">
                 <a class="btn btn-outline-primary" href="#">Older</a>

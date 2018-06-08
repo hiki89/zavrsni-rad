@@ -3,15 +3,14 @@
 include 'connection_to_db.php';
 
 $postId = $_POST['postId'];
-$commentId = $_POST['commentId'];
 
-if(isset($_POST['delete-button'])){
+if(isset($_POST['delPost'])){
     try {
         $connection = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "DELETE FROM comments WHERE id = $commentId";
+        $sql = "DELETE FROM posts WHERE id = $postId";
         $connection->exec($sql);
-        header('Location: single-post.php?id=' . $postId.'&comment_deleted=1');
+        header('Location: index.php');
         }
     catch(PDOException $e)
         {
